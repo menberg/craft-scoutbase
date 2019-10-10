@@ -1,19 +1,19 @@
 <?php
 
-namespace rias\scout\models;
+namespace plansequenz\scoutbase\models;
 
 use Craft;
 use craft\base\Model;
 use Exception;
-use rias\scout\engines\AlgoliaEngine;
-use rias\scout\engines\Engine;
-use rias\scout\ScoutIndex;
+use plansequenz\scoutbase\engines\AlgoliaEngine;
+use plansequenz\scoutbase\engines\Engine;
+use plansequenz\scoutbase\ScoutbaseIndex;
 use Tightenco\Collect\Support\Collection;
 
 class Settings extends Model
 {
     /** @var string */
-    public $pluginName = 'Scout';
+    public $pluginName = 'Scoutbase';
 
     /** @var bool */
     public $sync = true;
@@ -24,17 +24,14 @@ class Settings extends Model
     /** @var string */
     public $engine = AlgoliaEngine::class;
 
-    /** @var ScoutIndex[] */
+    /** @var ScoutbaseIndex[] */
     public $indices = [];
 
     /* @var string */
-    public $application_id = '';
+    public $application_credentials = '';
 
     /* @var string */
-    public $admin_api_key = '';
-
-    /* @var string */
-    public $search_api_key = '';
+    public $database_url = '';
 
     /* @var int */
     public $connect_timeout = 1;
@@ -47,8 +44,8 @@ class Settings extends Model
         return [
             [['connect_timeout', 'batch_size'], 'integer'],
             [['sync', 'queue'], 'boolean'],
-            [['application_id', 'admin_api_key', 'search_api_key'], 'string'],
-            [['application_id', 'admin_api_key', 'connect_timeout'], 'required'],
+            [['application_credentials', 'database_url'], 'string'],
+            [['application_credentials', 'database_url'], 'required'],
         ];
     }
 
@@ -59,14 +56,14 @@ class Settings extends Model
 
     public function getEngines(): Collection
     {
-        return $this->getIndices()->map(function (ScoutIndex $scoutIndex) {
-            return $this->getEngine($scoutIndex);
+        return $this->getIndices()->map(function (ScoutbaseIndex $scoutbaseIndex) {
+            return $this->getEngine($scoutbaseIndex);
         });
     }
 
-    public function getEngine(ScoutIndex $scoutIndex): Engine
+    public function getEngine(ScoutbaseIndex $scoutbaseIndex): Engine
     {
-        $engine = Craft::$container->get($this->engine, [$scoutIndex]);
+        $engine = Craft::$container->get($this->engine, [$scoutbaseIndex]);
 
         if (!$engine instanceof Engine) {
             throw new Exception("Invalid engine {$this->engine}, must implement ".Engine::class);
@@ -75,18 +72,13 @@ class Settings extends Model
         return $engine;
     }
 
-    public function getApplicationId(): string
+    public function getApplicationCredentials(): string
     {
-        return Craft::parseEnv($this->application_id);
+        return Craft::parseEnv($this->application_credentials);
     }
 
-    public function getAdminApiKey(): string
+    public function getDatabaseUrl(): string
     {
-        return Craft::parseEnv($this->admin_api_key);
-    }
-
-    public function getSearchApiKey(): string
-    {
-        return Craft::parseEnv($this->search_api_key);
+        return Craft::parseEnv($this->database_url);
     }
 }

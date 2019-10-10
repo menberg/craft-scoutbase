@@ -1,6 +1,6 @@
 <?php
 
-namespace rias\scout;
+namespace plansequenz\scoutbase;
 
 use Craft;
 use craft\base\Element;
@@ -9,7 +9,7 @@ use craft\elements\Entry;
 use Exception;
 use League\Fractal\TransformerAbstract;
 
-class ScoutIndex
+class ScoutbaseIndex
 {
     /** @var string */
     public $indexName;

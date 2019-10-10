@@ -1,6 +1,6 @@
 <?php
 
-namespace rias\scout;
+namespace plansequenz\scoutbase;
 
 use craft\base\ElementInterface;
 use League\Fractal\TransformerAbstract;

@@ -1,13 +1,15 @@
 {
-    "name": "rias/craft-scout",
-    "description": "Craft Scout provides a simple solution for adding full-text search to your entries. Scout will automatically keep your search indexes in sync with your entries.",
+    "name": "plansequenz/craft-scoutbase",
+    "description": "Craft Scoutbase provides a simple solution for connecting Craft CMS to Cloud Firestore. Scoutbase will automatically keep your Cloud Firestore database in sync with your entries.",
     "type": "craft-plugin",
     "keywords": [
         "craft",
         "cms",
         "craftcms",
         "craft-plugin",
-        "scout"
+        "scoutbase",
+        "firebase",
+        "firestore"
     ],
     "support": {
         "docs": "https://github.com/riasvdv/craft-scout/blob/master/README.md",
@@ -23,7 +25,6 @@
     "require": {
         "php": ">=7.0",
         "craftcms/cms": "^3.2.0",
-        "algolia/algoliasearch-client-php": "^2.3",
         "league/fractal": "^0.18",
         "tightenco/collect": "^5.5"
     },
@@ -39,16 +40,16 @@
     },
     "autoload": {
         "psr-4": {
-          "rias\\scout\\": "src/"
+          "plansequenz\\scoutbase\\": "src/"
         }
     },
     "extra": {
-        "name": "Scout",
-        "handle": "scout",
+        "name": "Scoutbase",
+        "handle": "scoutbase",
         "schemaVersion": "0.1.0",
         "hasCpSettings": true,
         "hasCpSection": false,
         "changelogUrl": "https://raw.githubusercontent.com/riasvdv/craft-scout/master/CHANGELOG.md",
-        "class": "rias\\scout\\Scout"
+        "class": "plansequenz\\scoutbase\\Scoutbase"
     }
 }

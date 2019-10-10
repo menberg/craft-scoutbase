@@ -1,6 +1,6 @@
 <?php
 
-namespace rias\scout\console\controllers;
+namespace plansequenz\scoutbase\console\controllers;
 
 use craft\console\Controller;
 

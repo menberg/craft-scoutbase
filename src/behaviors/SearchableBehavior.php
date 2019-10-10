@@ -1,6 +1,6 @@
 <?php
 
-namespace rias\scout\behaviors;
+namespace plansequenz\scoutbase\behaviors;
 
 use Craft;
 use craft\base\Element;
@@ -16,11 +16,11 @@ use craft\elements\User;
 use craft\helpers\ElementHelper;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
-use rias\scout\engines\Engine;
-use rias\scout\jobs\MakeSearchable;
-use rias\scout\Scout;
-use rias\scout\ScoutIndex;
-use rias\scout\serializer\AlgoliaSerializer;
+use plansequenz\scoutbase\engines\Engine;
+use plansequenz\scoutbase\jobs\MakeSearchable;
+use plansequenz\scoutbase\Scoutbase;
+use plansequenz\scoutbase\ScoutbaseIndex;
+use plansequenz\scoutbase\serializer\AlgoliaSerializer;
 use Tightenco\Collect\Support\Arr;
 use Tightenco\Collect\Support\Collection;
 use yii\base\Behavior;
@@ -33,9 +33,9 @@ use yii\base\Behavior;
  */
 class SearchableBehavior extends Behavior
 {
-    public function validatesCriteria(ScoutIndex $scoutIndex): bool
+    public function validatesCriteria(ScoutbaseIndex $scoutbaseIndex): bool
     {
-        $criteria = clone $scoutIndex->criteria;
+        $criteria = clone $scoutbaseIndex->criteria;
 
         return $criteria
             ->id($this->owner->id)
@@ -44,24 +44,24 @@ class SearchableBehavior extends Behavior
 
     public function getIndices(): Collection
     {
-        return Scout::$plugin
+        return Scoutbase::$plugin
             ->getSettings()
             ->getIndices()
-            ->filter(function (ScoutIndex $scoutIndex) {
+            ->filter(function (ScoutbaseIndex $scoutbaseIndex) {
                 $siteIds = array_map(function ($siteId) {
                     return (int) $siteId;
-                }, Arr::wrap($scoutIndex->criteria->siteId));
+                }, Arr::wrap($scoutbaseIndex->criteria->siteId));
 
-                return $scoutIndex->elementType === get_class($this->owner)
-                    && ($scoutIndex->criteria->siteId === '*'
+                return $scoutbaseIndex->elementType === get_class($this->owner)
+                    && ($scoutbaseIndex->criteria->siteId === '*'
                         || in_array((int) $this->owner->siteId, $siteIds));
             });
     }
 
     public function searchableUsing(): Collection
     {
-        return $this->getIndices()->map(function (ScoutIndex $scoutIndex) {
-            return Scout::$plugin->getSettings()->getEngine($scoutIndex);
+        return $this->getIndices()->map(function (ScoutbaseIndex $scoutbaseIndex) {
+            return Scoutbase::$plugin->getSettings()->getEngine($scoutbaseIndex);
         });
     }
 
@@ -72,16 +72,16 @@ class SearchableBehavior extends Behavior
         }
 
         $this->searchableUsing()->each(function (Engine $engine) {
-            if (!$this->validatesCriteria($engine->scoutIndex)) {
+            if (!$this->validatesCriteria($engine->scoutbaseIndex)) {
                 return $engine->delete($this->owner);
             }
 
-            if (Scout::$plugin->getSettings()->queue) {
+            if (Scoutbase::$plugin->getSettings()->queue) {
                 return Craft::$app->getQueue()->push(
                     new MakeSearchable([
                         'id'        => $this->owner->id,
                         'siteId'    => $this->owner->siteId,
-                        'indexName' => $engine->scoutIndex->indexName,
+                        'indexName' => $engine->scoutbaseIndex->indexName,
                     ])
                 );
             }
@@ -99,18 +99,18 @@ class SearchableBehavior extends Behavior
 
     public function unsearchable()
     {
-        if (!Scout::$plugin->getSettings()->sync) {
+        if (!Scoutbase::$plugin->getSettings()->sync) {
             return;
         }
 
         $this->searchableUsing()->each->delete($this->owner);
     }
 
-    public function toSearchableArray(ScoutIndex $scoutIndex): array
+    public function toSearchableArray(ScoutbaseIndex $scoutbaseIndex): array
     {
         return (new Manager())
             ->setSerializer(new AlgoliaSerializer())
-            ->createData(new Item($this->owner, $scoutIndex->getTransformer()))
+            ->createData(new Item($this->owner, $scoutbaseIndex->getTransformer()))
             ->toArray();
     }
 
@@ -148,7 +148,7 @@ class SearchableBehavior extends Behavior
 
     public function shouldBeSearchable(): bool
     {
-        if (!Scout::$plugin->getSettings()->sync) {
+        if (!Scoutbase::$plugin->getSettings()->sync) {
             return false;
         }
 

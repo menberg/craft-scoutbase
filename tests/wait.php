@@ -4,7 +4,7 @@ $start = time();
 
 while (true) {
     try {
-        new PDO('mysql:host=127.0.0.1;dbname=scout_testing', 'username', 'password');
+        new PDO('mysql:host=127.0.0.1;dbname=scoutbase_testing', 'username', 'password');
         fwrite(STDOUT, 'Docker container started!'.PHP_EOL);
         exit(0);
     } catch (PDOException $exception) {

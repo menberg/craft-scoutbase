@@ -1,10 +1,10 @@
 <?php
 
-namespace rias\scout\jobs;
+namespace plansequenz\scoutbase\jobs;
 
 use Craft;
 use craft\queue\BaseJob;
-use rias\scout\engines\Engine;
+use plansequenz\scoutbase\engines\Engine;
 
 class MakeSearchable extends BaseJob
 {
@@ -17,7 +17,7 @@ class MakeSearchable extends BaseJob
     /** @var string */
     public $indexName;
 
-    /** @var \rias\scout\behaviors\SearchableBehavior */
+    /** @var \plansequenz\scoutbase\behaviors\SearchableBehavior */
     private $element;
 
     public function __construct($config = [])
@@ -34,7 +34,7 @@ class MakeSearchable extends BaseJob
         }
 
         $engine = $this->element->searchableUsing()->first(function (Engine $engine) {
-            return $engine->scoutIndex->indexName === $this->indexName;
+            return $engine->scoutbaseIndex->indexName === $this->indexName;
         });
 
         $engine->update($this->element);

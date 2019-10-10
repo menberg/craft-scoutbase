@@ -1,6 +1,6 @@
 <?php
 
-namespace rias\scout;
+namespace plansequenz\scoutbase;
 
 /**
  * Attributes.

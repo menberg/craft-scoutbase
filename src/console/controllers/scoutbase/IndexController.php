@@ -1,12 +1,12 @@
 <?php
 
-namespace rias\scout\console\controllers\scout;
+namespace plansequenz\scoutbase\console\controllers\scoutbase;
 
 use Craft;
 use craft\helpers\Console;
-use rias\scout\console\controllers\BaseController;
-use rias\scout\engines\Engine;
-use rias\scout\Scout;
+use plansequenz\scoutbase\console\controllers\BaseController;
+use plansequenz\scoutbase\engines\Engine;
+use plansequenz\scoutbase\Scoutbase;
 use yii\console\ExitCode;
 
 class IndexController extends BaseController
@@ -25,17 +25,17 @@ class IndexController extends BaseController
     {
         if (
             $this->force === false
-            && $this->confirm(Craft::t('scout', 'Are you sure you want to flush Scout?')) === false
+            && $this->confirm(Craft::t('scoutbase', 'Are you sure you want to flush Scoutbase?')) === false
         ) {
             return ExitCode::OK;
         }
 
-        $engines = Scout::$plugin->getSettings()->getEngines();
+        $engines = Scoutbase::$plugin->getSettings()->getEngines();
         $engines->filter(function (Engine $engine) use ($index) {
-            return $index === '' || $engine->scoutIndex->indexName === $index;
+            return $index === '' || $engine->scoutbaseIndex->indexName === $index;
         })->each(function (Engine $engine) {
             $engine->flush();
-            $this->stdout("Flushed index {$engine->scoutIndex->indexName}\n", Console::FG_GREEN);
+            $this->stdout("Flushed index {$engine->scoutbaseIndex->indexName}\n", Console::FG_GREEN);
         });
 
         return ExitCode::OK;
@@ -43,21 +43,21 @@ class IndexController extends BaseController
 
     public function actionImport($index = '')
     {
-        $engines = Scout::$plugin->getSettings()->getEngines();
+        $engines = Scoutbase::$plugin->getSettings()->getEngines();
 
         $engines->filter(function (Engine $engine) use ($index) {
-            return $index === '' || $engine->scoutIndex->indexName === $index;
+            return $index === '' || $engine->scoutbaseIndex->indexName === $index;
         })->each(function (Engine $engine) {
-            $totalElements = $engine->scoutIndex->criteria->count();
+            $totalElements = $engine->scoutbaseIndex->criteria->count();
             $elementsUpdated = 0;
-            $batch = $engine->scoutIndex->criteria->batch(
-                Scout::$plugin->getSettings()->batch_size
+            $batch = $engine->scoutbaseIndex->criteria->batch(
+                Scoutbase::$plugin->getSettings()->batch_size
             );
 
             foreach ($batch as $elements) {
                 $engine->update($elements);
                 $elementsUpdated += count($elements);
-                $this->stdout("Updated {$elementsUpdated}/{$totalElements} element(s) in {$engine->scoutIndex->indexName}\n", Console::FG_GREEN);
+                $this->stdout("Updated {$elementsUpdated}/{$totalElements} element(s) in {$engine->scoutbaseIndex->indexName}\n", Console::FG_GREEN);
             }
         });
 

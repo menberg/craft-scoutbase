@@ -1,17 +1,17 @@
 <?php
 
-namespace rias\scout\engines;
+namespace plansequenz\scoutbase\engines;
 
 use Algolia\AlgoliaSearch\SearchClient;
-use rias\scout\IndexSettings;
-use rias\scout\ScoutIndex;
+use plansequenz\scoutbase\IndexSettings;
+use plansequenz\scoutbase\ScoutbaseIndex;
 
 abstract class Engine
 {
-    /** @var ScoutIndex */
-    public $scoutIndex;
+    /** @var ScoutbaseIndex */
+    public $scoutbaseIndex;
 
-    abstract public function __construct(ScoutIndex $scoutIndex, SearchClient $algolia);
+    abstract public function __construct(ScoutbaseIndex $scoutbaseIndex, SearchClient $algolia);
 
     abstract public function update($models);
 
@@ -57,7 +57,7 @@ abstract class Engine
     public function splitObject(array $data): array
     {
         $pieces = [];
-        foreach ($this->scoutIndex->splitElementsOn as $splitElementOn) {
+        foreach ($this->scoutbaseIndex->splitElementsOn as $splitElementOn) {
             $pieces[$splitElementOn] = [];
             if (isset($data[$splitElementOn]) && is_array($data[$splitElementOn])) {
                 $pieces[$splitElementOn] = $data[$splitElementOn];

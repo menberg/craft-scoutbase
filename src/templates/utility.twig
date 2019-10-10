@@ -22,25 +22,25 @@
                 </th>
                 <td>
                     <div style="display: flex; justify-content: left; flex-wrap: wrap;">
-                        {% include 'scout/_partials/action' with {
+                        {% include 'scoutbase/_partials/action' with {
                             action: {
-                                name: 'Refresh' | t('scout'),
+                                name: 'Refresh' | t('scoutbase'),
                                 slug: 'refresh',
                                 index: index.name
                             }
                         } %}
                         &nbsp;
-                        {% include 'scout/_partials/action' with {
+                        {% include 'scoutbase/_partials/action' with {
                             action: {
-                                name: 'Import' | t('scout'),
+                                name: 'Import' | t('scoutbase'),
                                 slug: 'import',
                                 index: index.name
                             }
                         } %}
                         &nbsp;
-                        {% include 'scout/_partials/action' with {
+                        {% include 'scoutbase/_partials/action' with {
                             action: {
-                                name: 'Flush' | t('scout'),
+                                name: 'Flush' | t('scoutbase'),
                                 slug: 'flush',
                                 index: index.name
                             }

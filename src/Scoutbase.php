@@ -1,6 +1,6 @@
 <?php
 
-namespace rias\scout;
+namespace plansequenz\scoutbase;
 
 use Algolia\AlgoliaSearch\Config\SearchConfig;
 use Algolia\AlgoliaSearch\SearchClient;
@@ -14,13 +14,13 @@ use craft\services\Elements;
 use craft\services\Utilities;
 use craft\web\twig\variables\CraftVariable;
 use Exception;
-use rias\scout\behaviors\SearchableBehavior;
-use rias\scout\models\Settings;
-use rias\scout\utilities\ScoutUtility;
-use rias\scout\variables\ScoutVariable;
+use plansequenz\scoutbase\behaviors\SearchableBehavior;
+use plansequenz\scoutbase\models\Settings;
+use plansequenz\scoutbase\utilities\ScoutbaseUtility;
+use plansequenz\scoutbase\variables\ScoutbaseVariable;
 use yii\base\Event;
 
-class Scout extends Plugin
+class Scoutbase extends Plugin
 {
     const EDITION_STANDARD = 'standard';
     const EDITION_PRO = 'pro';
@@ -33,7 +33,7 @@ class Scout extends Plugin
         ];
     }
 
-    /** @var \rias\scout\Scout */
+    /** @var \plansequenz\scoutbase\Scoutbase */
     public static $plugin;
 
     public $hasCpSettings = true;
@@ -49,8 +49,8 @@ class Scout extends Plugin
 
         Craft::$container->setSingleton(SearchClient::class, function () {
             $config = SearchConfig::create(
-                self::$plugin->getSettings()->getApplicationId(),
-                self::$plugin->getSettings()->getAdminApiKey()
+                self::$plugin->getSettings()->getApplicationCredentials(),
+                self::$plugin->getSettings()->getDatabaseUrl()
             );
 
             $config->setConnectTimeout($this->getSettings()->connect_timeout);
@@ -60,7 +60,7 @@ class Scout extends Plugin
 
         $request = Craft::$app->getRequest();
         if ($request->getIsConsoleRequest()) {
-            $this->controllerNamespace = 'rias\scout\console\controllers\scout';
+            $this->controllerNamespace = 'plansequenz\scoutbase\console\controllers\scoutbase';
         }
 
         $this->validateConfig();
@@ -88,7 +88,7 @@ class Scout extends Plugin
     {
         $overrides = Craft::$app->getConfig()->getConfigFromFile(strtolower($this->handle));
 
-        return Craft::$app->getView()->renderTemplate('scout/settings', [
+        return Craft::$app->getView()->renderTemplate('scoutbase/settings', [
             'settings'  => $this->getSettings(),
             'overrides' => array_keys($overrides),
         ]);
@@ -100,7 +100,7 @@ class Scout extends Plugin
             Utilities::class,
             Utilities::EVENT_REGISTER_UTILITY_TYPES,
             function (RegisterComponentTypesEvent $event) {
-                $event->types[] = ScoutUtility::class;
+                $event->types[] = ScoutbaseUtility::class;
             }
         );
     }
@@ -126,7 +126,7 @@ class Scout extends Plugin
             function (Event $event) {
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
-                $variable->set('scout', ScoutVariable::class);
+                $variable->set('scoutbase', ScoutbaseVariable::class);
             }
         );
     }
@@ -136,7 +136,7 @@ class Scout extends Plugin
         $indices = $this->getSettings()->getIndices();
 
         if ($indices->unique('indexName')->count() !== $indices->count()) {
-            throw new Exception('Index names must be unique in the Scout config.');
+            throw new Exception('Index names must be unique in the Scoutbase config.');
         }
     }
 

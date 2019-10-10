@@ -1,11 +1,11 @@
 <?php
 
-namespace rias\scout\engines;
+namespace plansequenz\scoutbase\engines;
 
 use Algolia\AlgoliaSearch\SearchClient as Algolia;
 use craft\base\Element;
-use rias\scout\IndexSettings;
-use rias\scout\ScoutIndex;
+use plansequenz\scoutbase\IndexSettings;
+use plansequenz\scoutbase\ScoutbaseIndex;
 use Tightenco\Collect\Support\Arr;
 use Tightenco\Collect\Support\Collection;
 
@@ -14,12 +14,12 @@ class AlgoliaEngine extends Engine
     /** @var \Algolia\AlgoliaSearch\SearchClient */
     protected $algolia;
 
-    /** @var \rias\scout\ScoutIndex */
-    public $scoutIndex;
+    /** @var \plansequenz\scoutbase\ScoutbaseIndex */
+    public $scoutbaseIndex;
 
-    public function __construct(ScoutIndex $scoutIndex, Algolia $algolia)
+    public function __construct(ScoutbaseIndex $scoutbaseIndex, Algolia $algolia)
     {
-        $this->scoutIndex = $scoutIndex;
+        $this->scoutbaseIndex = $scoutbaseIndex;
         $this->algolia = $algolia;
     }
 
@@ -35,7 +35,7 @@ class AlgoliaEngine extends Engine
         $elements = new Collection(Arr::wrap($elements));
 
         $elements = $elements->filter(function (Element $element) {
-            return get_class($element) === $this->scoutIndex->elementType;
+            return get_class($element) === $this->scoutbaseIndex->elementType;
         });
 
         if ($elements->isEmpty()) {
@@ -44,7 +44,7 @@ class AlgoliaEngine extends Engine
         $objects = $this->transformElements($elements);
 
         if (!empty($objects)) {
-            $index = $this->algolia->initIndex($this->scoutIndex->indexName);
+            $index = $this->algolia->initIndex($this->scoutbaseIndex->indexName);
             $index->saveObjects($objects);
         }
     }
@@ -53,7 +53,7 @@ class AlgoliaEngine extends Engine
     {
         $elements = new Collection(Arr::wrap($elements));
 
-        $index = $this->algolia->initIndex($this->scoutIndex->indexName);
+        $index = $this->algolia->initIndex($this->scoutbaseIndex->indexName);
 
         $objectIds = $elements->map(function ($object) {
             if ($object instanceof Element) {
@@ -67,7 +67,7 @@ class AlgoliaEngine extends Engine
             return;
         }
 
-        if (empty($this->scoutIndex->splitElementsOn)) {
+        if (empty($this->scoutbaseIndex->splitElementsOn)) {
             return $index->deleteObjects($objectIds);
         }
 
@@ -78,26 +78,26 @@ class AlgoliaEngine extends Engine
 
     public function flush()
     {
-        $index = $this->algolia->initIndex($this->scoutIndex->indexName);
+        $index = $this->algolia->initIndex($this->scoutbaseIndex->indexName);
         $index->clearObjects();
     }
 
     public function updateSettings(IndexSettings $indexSettings)
     {
-        $index = $this->algolia->initIndex($this->scoutIndex->indexName);
+        $index = $this->algolia->initIndex($this->scoutbaseIndex->indexName);
         $index->setSettings($indexSettings->settings);
     }
 
     public function getSettings(): array
     {
-        $index = $this->algolia->initIndex($this->scoutIndex->indexName);
+        $index = $this->algolia->initIndex($this->scoutbaseIndex->indexName);
 
         return $index->getSettings();
     }
 
     public function getTotalRecords(): int
     {
-        $index = $this->algolia->initIndex($this->scoutIndex->indexName);
+        $index = $this->algolia->initIndex($this->scoutbaseIndex->indexName);
         $response = $index->search('', [
             'attributesToRetrieve' => null,
         ]);
@@ -108,8 +108,8 @@ class AlgoliaEngine extends Engine
     private function transformElements(Collection $elements): array
     {
         $objects = $elements->map(function (Element $element) {
-            /** @var \rias\scout\behaviors\SearchableBehavior $element */
-            if (empty($searchableData = $element->toSearchableArray($this->scoutIndex))) {
+            /** @var \plansequenz\scoutbase\behaviors\SearchableBehavior $element */
+            if (empty($searchableData = $element->toSearchableArray($this->scoutbaseIndex))) {
                 return;
             }
 
@@ -119,7 +119,7 @@ class AlgoliaEngine extends Engine
             );
         })->filter()->values()->all();
 
-        if (empty($this->scoutIndex->splitElementsOn)) {
+        if (empty($this->scoutbaseIndex->splitElementsOn)) {
             return $objects;
         }
 

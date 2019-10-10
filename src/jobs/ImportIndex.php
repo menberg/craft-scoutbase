@@ -1,10 +1,10 @@
 <?php
 
-namespace rias\scout\jobs;
+namespace plansequenz\scoutbase\jobs;
 
 use craft\queue\BaseJob;
-use rias\scout\engines\Engine;
-use rias\scout\Scout;
+use plansequenz\scoutbase\engines\Engine;
+use plansequenz\scoutbase\Scoutbase;
 
 class ImportIndex extends BaseJob
 {
@@ -14,18 +14,18 @@ class ImportIndex extends BaseJob
     public function execute($queue)
     {
         /** @var Engine $engine */
-        $engine = Scout::$plugin->getSettings()->getEngines()->first(function (Engine $engine) {
-            return $engine->scoutIndex->indexName === $this->indexName;
+        $engine = Scoutbase::$plugin->getSettings()->getEngines()->first(function (Engine $engine) {
+            return $engine->scoutbaseIndex->indexName === $this->indexName;
         });
 
         if (!$engine) {
             return;
         }
 
-        $elementsCount = $engine->scoutIndex->criteria->count();
+        $elementsCount = $engine->scoutbaseIndex->criteria->count();
         $elementsUpdated = 0;
-        $batch = $engine->scoutIndex->criteria->batch(
-            Scout::$plugin->getSettings()->batch_size
+        $batch = $engine->scoutbaseIndex->criteria->batch(
+            Scoutbase::$plugin->getSettings()->batch_size
         );
 
         foreach ($batch as $elements) {

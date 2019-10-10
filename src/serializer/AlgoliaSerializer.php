@@ -1,6 +1,6 @@
 <?php
 
-namespace rias\scout\serializer;
+namespace plansequenz\scoutbase\serializer;
 
 class AlgoliaSerializer extends \League\Fractal\Serializer\ArraySerializer
 {
