@@ -6,9 +6,9 @@ use plansequenz\scoutbase\Scoutbase;
 
 class ScoutbaseVariable
 {
-    public function firebaseDatabaseUrl(): string
+    public function firebaseProjectId(): string
     {
-        return Scoutbase::$plugin->getSettings()->getDatabaseUrl();
+        return Scoutbase::$plugin->getSettings()->getProjectId();
     }
 
     public function getPluginName()

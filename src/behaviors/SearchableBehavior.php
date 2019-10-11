@@ -20,7 +20,7 @@ use plansequenz\scoutbase\engines\Engine;
 use plansequenz\scoutbase\jobs\MakeSearchable;
 use plansequenz\scoutbase\Scoutbase;
 use plansequenz\scoutbase\ScoutbaseIndex;
-use plansequenz\scoutbase\serializer\AlgoliaSerializer;
+use plansequenz\scoutbase\serializer\FirebaseSerializer;
 use Tightenco\Collect\Support\Arr;
 use Tightenco\Collect\Support\Collection;
 use yii\base\Behavior;
@@ -109,7 +109,7 @@ class SearchableBehavior extends Behavior
     public function toSearchableArray(ScoutbaseIndex $scoutbaseIndex): array
     {
         return (new Manager())
-            ->setSerializer(new AlgoliaSerializer())
+            ->setSerializer(new FirebaseSerializer())
             ->createData(new Item($this->owner, $scoutbaseIndex->getTransformer()))
             ->toArray();
     }

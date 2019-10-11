@@ -2,7 +2,7 @@
 
 namespace plansequenz\scoutbase\engines;
 
-use Algolia\AlgoliaSearch\SearchClient;
+use Google\Cloud\Firestore\FirestoreClient;
 use plansequenz\scoutbase\IndexSettings;
 use plansequenz\scoutbase\ScoutbaseIndex;
 
@@ -11,7 +11,7 @@ abstract class Engine
     /** @var ScoutbaseIndex */
     public $scoutbaseIndex;
 
-    abstract public function __construct(ScoutbaseIndex $scoutbaseIndex, SearchClient $algolia);
+    abstract public function __construct(ScoutbaseIndex $scoutbaseIndex, FirestoreClient $firestore);
 
     abstract public function update($models);
 

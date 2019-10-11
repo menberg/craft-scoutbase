@@ -59,13 +59,13 @@
 }) }}
 
 {{ forms.autosuggestfield({
-    label: 'Firebase Database Url',
-    name: 'database_url',
-    instructions: 'The URL to the Firestore database',
+    label: 'Firebase Project Id',
+    name: 'project_id',
+    instructions: 'The Project ID of the Firestore database',
     suggestEnvVars: true,
-    value: settings.database_url,
-    disabled: 'database_url' in overrides,
-    warning: 'database_url' in overrides ? configWarning('database_url'),
+    value: settings.project_id,
+    disabled: 'project_id' in overrides,
+    warning: 'project_id' in overrides ? configWarning('project_id'),
 }) }}
 
 <div class="field">

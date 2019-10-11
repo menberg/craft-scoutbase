@@ -2,7 +2,7 @@
 
 namespace plansequenz\scoutbase\serializer;
 
-class AlgoliaSerializer extends \League\Fractal\Serializer\ArraySerializer
+class FirebaseSerializer extends \League\Fractal\Serializer\ArraySerializer
 {
     /**
      * Serialize a collection.

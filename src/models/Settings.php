@@ -5,7 +5,7 @@ namespace plansequenz\scoutbase\models;
 use Craft;
 use craft\base\Model;
 use Exception;
-use plansequenz\scoutbase\engines\AlgoliaEngine;
+use plansequenz\scoutbase\engines\FirestoreEngine;
 use plansequenz\scoutbase\engines\Engine;
 use plansequenz\scoutbase\ScoutbaseIndex;
 use Tightenco\Collect\Support\Collection;
@@ -22,7 +22,7 @@ class Settings extends Model
     public $queue = true;
 
     /** @var string */
-    public $engine = AlgoliaEngine::class;
+    public $engine = FirestoreEngine::class;
 
     /** @var ScoutbaseIndex[] */
     public $indices = [];
@@ -31,7 +31,7 @@ class Settings extends Model
     public $application_credentials = '';
 
     /* @var string */
-    public $database_url = '';
+    public $project_id = '';
 
     /* @var int */
     public $connect_timeout = 1;
@@ -44,8 +44,8 @@ class Settings extends Model
         return [
             [['connect_timeout', 'batch_size'], 'integer'],
             [['sync', 'queue'], 'boolean'],
-            [['application_credentials', 'database_url'], 'string'],
-            [['application_credentials', 'database_url'], 'required'],
+            [['application_credentials', 'project_id'], 'string'],
+            [['application_credentials', 'project_id'], 'required'],
         ];
     }
 
@@ -77,8 +77,8 @@ class Settings extends Model
         return Craft::parseEnv($this->application_credentials);
     }
 
-    public function getDatabaseUrl(): string
+    public function getProjectId(): string
     {
-        return Craft::parseEnv($this->database_url);
+        return Craft::parseEnv($this->project_id);
     }
 }

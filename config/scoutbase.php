@@ -46,7 +46,7 @@ return [
     /*
     * The URL to the Firestore database
     */
-    'database_url' => '$DATABASE_URL',
+    'project_id' => '$FIREBASE_PROJECT_ID',
 
     /*
      * A collection of indices that Scoutbase should sync to, these can be set

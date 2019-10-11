@@ -2,8 +2,7 @@
 
 namespace plansequenz\scoutbase;
 
-use Algolia\AlgoliaSearch\Config\SearchConfig;
-use Algolia\AlgoliaSearch\SearchClient;
+use Google\Cloud\Firestore\FirestoreClient;
 use Craft;
 use craft\base\Element;
 use craft\base\Plugin;
@@ -47,15 +46,12 @@ class Scoutbase extends Plugin
 
         self::$plugin = $this;
 
-        Craft::$container->setSingleton(SearchClient::class, function () {
-            $config = SearchConfig::create(
-                self::$plugin->getSettings()->getApplicationCredentials(),
-                self::$plugin->getSettings()->getDatabaseUrl()
-            );
-
-            $config->setConnectTimeout($this->getSettings()->connect_timeout);
-
-            return SearchClient::createWithConfig($config);
+        Craft::$container->setSingleton(FirestoreClient::class, function () {
+            $config = [
+                'projectId' => self::$plugin->getSettings()->getProjectId(),
+                'keyFilePath' => self::$plugin->getSettings()->getApplicationCredentials(),
+            ];
+            return new FirestoreClient($config);
         });
 
         $request = Craft::$app->getRequest();
